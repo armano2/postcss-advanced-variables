@@ -1,5 +1,16 @@
 # Changes to PostCSS Advanced Variables
 
+## [4.0.1](https://github.com/armano2/postcss-advanced-variables/compare/v4.0.0...v4.0.1) (2024-02-23)
+
+
+### Bug Fixes
+
+* automated releases ([15ebaf5](https://github.com/armano2/postcss-advanced-variables/commit/15ebaf580d1876d92331b2d39056ffe42e891d87))
+* correct issues in package.json ([61dd98d](https://github.com/armano2/postcss-advanced-variables/commit/61dd98d750ceb273adf37956cd2cb6ae7c0f4819))
+* improve support for each ([5b7ae89](https://github.com/armano2/postcss-advanced-variables/commit/5b7ae8955e8186a56d69d9c459b7b802de192afa))
+* trigger release ([b387946](https://github.com/armano2/postcss-advanced-variables/commit/b387946d18f13e2c48206d83eb4fcab17d28eaa3))
+* update pipeline ([bd01265](https://github.com/armano2/postcss-advanced-variables/commit/bd01265a4d0f44d672b7574049cb594e53ed0b59))
+
 ### 4.0.0
 
 - Updated: `postcss` to ^8.2.4 (major)

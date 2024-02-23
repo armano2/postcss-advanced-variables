@@ -1,17 +1,17 @@
 {
-  "name": "postcss-advanced-variables",
+  "name": "postcss-advanced-variables-fixes",
   "version": "4.0.0",
   "description": "Use Sass-like variables, conditionals, and iterators in CSS",
   "author": "Jonathan Neal <jonathantneal@hotmail.com>",
   "license": "CC0-1.0",
-  "repository": "jonathantneal/postcss-advanced-variables",
-  "homepage": "https://github.com/jonathantneal/postcss-advanced-variables#readme",
-  "bugs": "https://github.com/jonathantneal/postcss-advanced-variables/issues",
+  "repository": "armano2/postcss-advanced-variables-2",
+  "homepage": "https://github.com/armano2/postcss-advanced-variables-2#readme",
+  "bugs": "https://github.com/armano2/postcss-advanced-variables-2/issues",
   "main": "lib/index.js",
-  "module": "lib/index.esm.js",
+  "module": "lib/index.mjs",
   "files": [
     "lib/index.js",
-    "lib/index.esm.js"
+    "lib/index.mjs"
   ],
   "scripts": {
     "prepublishOnly": "npm test",

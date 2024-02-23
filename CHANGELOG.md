@@ -1,5 +1,15 @@
 # Changes to PostCSS Advanced Variables
 
+## [4.0.2](https://github.com/armano2/postcss-advanced-variables/compare/v4.0.1...v4.0.2) (2024-02-23)
+
+
+### Bug Fixes
+
+* correct package lock ([a7b10e0](https://github.com/armano2/postcss-advanced-variables/commit/a7b10e012a3df8b2d7278fafbc50007f68cb399b))
+* enable dependabot ([1d1f975](https://github.com/armano2/postcss-advanced-variables/commit/1d1f97546942dc2d8e7ea4d995e059064473fb33))
+* update actions and add missing lock file ([c2b579d](https://github.com/armano2/postcss-advanced-variables/commit/c2b579d043cf9fa7e6afa2a88f1898baa6768ede))
+* update tests to run on node 18 ([3d83c4c](https://github.com/armano2/postcss-advanced-variables/commit/3d83c4c48c3c537cd7abb85c4419c4adaf7efab0))
+
 ## [4.0.1](https://github.com/armano2/postcss-advanced-variables/compare/v4.0.0...v4.0.1) (2024-02-23)
 
 

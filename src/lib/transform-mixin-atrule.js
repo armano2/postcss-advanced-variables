@@ -1,7 +1,7 @@
 // tooling
 import { list } from 'postcss';
-import getReplacedString from './get-replaced-string';
-import setVariable from './set-variable';
+import getReplacedString from './get-replaced-string.js';
+import setVariable from './set-variable.js';
 
 // transform @mixin at-rules
 export default function transformMixinAtrule(rule, opts) {

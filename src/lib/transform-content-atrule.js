@@ -1,6 +1,6 @@
 // tooling
-import manageUnresolved from './manage-unresolved';
-import transformNode from './transform-node';
+import manageUnresolved from './manage-unresolved.js';
+import transformNode from './transform-node.js';
 
 // transform @content at-rules
 export default function transformContentAtrule(rule, opts) {

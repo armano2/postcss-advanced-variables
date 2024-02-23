@@ -1,15 +1,15 @@
 // tooling
-import transformDecl from './transform-decl';
-import transformAtrule from './transform-atrule';
-import transformEachAtrule from './transform-each-atrule';
-import transformIfAtrule from './transform-if-atrule';
-import transformImportAtrule from './transform-import-atrule';
-import transformIncludeAtrule from './transform-include-atrule';
-import transformForAtrule from './transform-for-atrule';
-import transformMixinAtrule from './transform-mixin-atrule';
-import transformRule from './transform-rule';
-import transformContentAtrule from './transform-content-atrule';
-import waterfall from './waterfall';
+import transformDecl from './transform-decl.js';
+import transformAtrule from './transform-atrule.js';
+import transformEachAtrule from './transform-each-atrule.js';
+import transformIfAtrule from './transform-if-atrule.js';
+import transformImportAtrule from './transform-import-atrule.js';
+import transformIncludeAtrule from './transform-include-atrule.js';
+import transformForAtrule from './transform-for-atrule.js';
+import transformMixinAtrule from './transform-mixin-atrule.js';
+import transformRule from './transform-rule.js';
+import transformContentAtrule from './transform-content-atrule.js';
+import waterfall from './waterfall.js';
 
 export default function transformNode(node, opts) {
 	return waterfall(

@@ -1,7 +1,7 @@
 // tooling
 import { list } from 'postcss';
-import transformNode from './transform-node';
-import getReplacedString from './get-replaced-string';
+import transformNode from './transform-node.js';
+import getReplacedString from './get-replaced-string.js';
 
 // transform @if at-rules
 export default function transformIfAtrule(rule, opts) {

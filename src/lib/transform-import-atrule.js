@@ -1,9 +1,9 @@
 // tooling
-import postcss, { list } from 'postcss';
-import getReplacedString from './get-replaced-string';
+import postcss from 'postcss';
+import getReplacedString from './get-replaced-string.js';
 import path from 'path';
-import transformNode from './transform-node';
-import manageUnresolved from './manage-unresolved';
+import transformNode from './transform-node.js';
+import manageUnresolved from './manage-unresolved.js';
 
 // transform @import at-rules
 export default function transformImportAtrule(rule, opts) {
@@ -76,7 +76,7 @@ const processor = postcss();
 
 // return the @import statement options (@import ID, @import ID MEDIA)
 const getImportOpts = (node, opts) => {
-	const [ rawid, ...medias ] = list.space(node.params);
+	const [ rawid, ...medias ] = postcss.list.space(node.params);
 	const id = getReplacedString(trimWrappingURL(rawid), node, opts);
 	const media = medias.join(' ');
 

@@ -1,5 +1,5 @@
 // tooling
-import getReplacedString from './get-replaced-string';
+import getReplacedString from './get-replaced-string.js';
 
 // transform rule nodes
 export default function transformRule(rule, opts) {

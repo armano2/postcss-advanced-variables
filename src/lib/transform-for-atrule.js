@@ -1,9 +1,9 @@
 // tooling
 import { list } from 'postcss';
-import getReplacedString from './get-replaced-string';
-import transformNode from './transform-node';
-import setVariable from './set-variable';
-import waterfall from './waterfall';
+import getReplacedString from './get-replaced-string.js';
+import transformNode from './transform-node.js';
+import setVariable from './set-variable.js';
+import waterfall from './waterfall.js';
 
 // transform @for at-rules
 export default function transformForAtrule(rule, opts) {

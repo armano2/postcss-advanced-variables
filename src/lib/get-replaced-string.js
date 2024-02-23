@@ -1,10 +1,10 @@
 // tooling
-import getClosestVariable from './get-closest-variable';
-import manageUnresolved from './manage-unresolved';
+import getClosestVariable from './get-closest-variable.js';
+import manageUnresolved from './manage-unresolved.js';
 
 // return content with its variables replaced by the corresponding values of a node
 export default function getReplacedString(string, node, opts) {
-	const replacedString = string.replace(
+	return string.replace(
 		matchVariables,
 		(match, before, name1, name2, name3) => {
 			// conditionally return an (unescaped) match
@@ -26,13 +26,9 @@ export default function getReplacedString(string, node, opts) {
 			}
 
 			// the stringified value
-			const stringifiedValue = `${before}${stringify(value)}`;
-
-			return stringifiedValue;
+			return `${before}${stringify(value)}`;
 		}
 	);
-
-	return replacedString;
 }
 
 // match all $name, $(name), and #{$name} variables (and catch the character before it)

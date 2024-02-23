@@ -1,5 +1,5 @@
 // tooling
-import getReplacedString from './get-replaced-string';
+import getReplacedString from './get-replaced-string.js';
 
 // transform generic at-rules
 export default function transformAtrule(rule, opts) {

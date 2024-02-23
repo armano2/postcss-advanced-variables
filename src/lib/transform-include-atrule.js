@@ -1,10 +1,10 @@
 // tooling
 import { list } from 'postcss';
-import getClosestVariable from './get-closest-variable';
-import getReplacedString from './get-replaced-string';
-import manageUnresolved from './manage-unresolved';
-import setVariable from './set-variable';
-import transformNode from './transform-node';
+import getClosestVariable from './get-closest-variable.js';
+import getReplacedString from './get-replaced-string.js';
+import manageUnresolved from './manage-unresolved.js';
+import setVariable from './set-variable.js';
+import transformNode from './transform-node.js';
 
 // transform @include at-rules
 export default function transformIncludeAtrule(rule, opts) {

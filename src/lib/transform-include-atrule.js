@@ -1,17 +1,17 @@
 // tooling
-import { list } from 'postcss';
 import getClosestVariable from './get-closest-variable.js';
 import getReplacedString from './get-replaced-string.js';
 import manageUnresolved from './manage-unresolved.js';
 import setVariable from './set-variable.js';
 import transformNode from './transform-node.js';
+import {getMixinParams} from "./get-mixin-params.js";
 
 // transform @include at-rules
 export default function transformIncludeAtrule(rule, opts) {
 	// if @include is supported
 	if (opts.transform.includes('@include')) {
 		// @include options
-		const { name, args } = getIncludeOpts(rule);
+		const { name, params } = getMixinParams(rule.params);
 
 		// the closest @mixin variable
 		const mixin = getClosestVariable(`@mixin ${name}`, rule.parent, opts);
@@ -21,8 +21,8 @@ export default function transformIncludeAtrule(rule, opts) {
 			// set @mixin variables on the @include at-rule
 			mixin.params.forEach(
 				(param, index) => {
-					const arg = index in args
-						? getReplacedString(args[index], rule, opts)
+					const arg = index in params
+						? getReplacedString(params[index], rule, opts)
 					: param.value;
 
 					setVariable(rule, param.name, arg, opts);
@@ -49,17 +49,3 @@ export default function transformIncludeAtrule(rule, opts) {
 		}
 	}
 }
-
-// return the @include statement options (@include NAME, @include NAME(ARGS))
-const getIncludeOpts = node => {
-	// @include name and args
-	const [ name, sourceArgs ] = node.params.split(matchOpeningParen, 2);
-	const args = sourceArgs
-		? list.comma(sourceArgs.slice(0, -1))
-	: [];
-
-	return { name, args };
-};
-
-// match an opening parenthesis
-const matchOpeningParen = '(';

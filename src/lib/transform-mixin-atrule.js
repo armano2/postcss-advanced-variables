@@ -2,6 +2,7 @@
 import { list } from 'postcss';
 import getReplacedString from './get-replaced-string.js';
 import setVariable from './set-variable.js';
+import {getMixinParams} from "./get-mixin-params.js";
 
 // transform @mixin at-rules
 export default function transformMixinAtrule(rule, opts) {
@@ -21,11 +22,13 @@ export default function transformMixinAtrule(rule, opts) {
 // return the @mixin statement options (@mixin NAME, @mixin NAME(PARAMS))
 const getMixinOpts = (node, opts) => {
 	// @mixin name and default params ([{ name, value }, ...])
-	const [ name, sourceParams ] = node.params.split(matchOpeningParen, 2);
-	const params = sourceParams && sourceParams.slice(0, -1).trim()
-		? list.comma(sourceParams.slice(0, -1).trim()).map(
+	const parsed = getMixinParams(node.params);
+
+	return {
+		name: parsed.name,
+		params: parsed.params.map(
 			param => {
-				const parts = list.split(param, ':');
+				const parts = list.split(param, [':'], false);
 				const paramName  = parts[0].slice(1);
 				const paramValue = parts.length > 1
 					? getReplacedString(parts.slice(1).join(':'), node, opts)
@@ -34,10 +37,5 @@ const getMixinOpts = (node, opts) => {
 				return { name: paramName, value: paramValue };
 			}
 		)
-	: [];
-
-	return { name, params };
+	};
 };
-
-// match an opening parenthesis
-const matchOpeningParen = '(';

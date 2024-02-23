@@ -1,5 +1,12 @@
 # Changes to PostCSS Advanced Variables
 
+## [4.0.4](https://github.com/armano2/postcss-advanced-variables/compare/v4.0.3...v4.0.4) (2024-02-23)
+
+
+### Bug Fixes
+
+* correct issues with mixin params ([f90508c](https://github.com/armano2/postcss-advanced-variables/commit/f90508ca2d42d9058840f2714a6519b7e23e5ea3))
+
 ## [4.0.3](https://github.com/armano2/postcss-advanced-variables/compare/v4.0.2...v4.0.3) (2024-02-23)
 
 

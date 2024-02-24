@@ -39,7 +39,7 @@ function compare(children, operation) {
   if (children.length !== 2) {
     throw new Error(`Unsupported expression ${operation}`);
   }
-  // TODO: implement support for unresolved variables
+  // TODO: implement support for unresolved variables and string operations
   return operation(children[0], children[1]);
 }
 
@@ -146,13 +146,13 @@ export function parseExpression(node) {
     }
   }
 
-  if (outStack.length > 1) {
+  if (outStack.length === 1) {
     throw new Error(
-      `stack to big ${outStack.length}, there seem to be something wrong with the expression ${node.params}`,
+      `stack seem to be not correct ${outStack.length}, there seem to be something wrong with the expression ${node.params}`,
     );
   }
 
-  return outStack[0];
+  return outStack.pop();
 }
 
 export function evaluateExpression(parent, opts) {

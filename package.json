@@ -19,6 +19,7 @@
   "scripts": {
     "prepublishOnly": "npm test",
     "format": "prettier src -w",
+    "build:watch": "rollup -c rollup.config.mjs --watch",
     "pretest": "rollup -c rollup.config.mjs --silent",
     "test": "npm run test:lint && npm run test:format && npm run test:tape",
     "test:lint": "eslint src",
@@ -35,6 +36,7 @@
     "postcss": "^8.2.4"
   },
   "devDependencies": {
+    "@csstools/css-tokenizer": "^2.2.3",
     "@eslint/js": "^8.57.0",
     "esbuild": "^0.20.1",
     "eslint": "^8.57.0",

@@ -2,11 +2,13 @@
 import { list } from 'postcss';
 import transformNode from './transform-node';
 import getReplacedString from './get-replaced-string';
+import { evaluateExpression } from './tokenize-expression';
 
 // transform @if at-rules
 export default function transformIfAtrule(rule, opts) {
   // @if options
-  const isTruthy = isIfTruthy(rule, opts);
+  // const isTruthy = isIfTruthy(rule, opts);
+  const isTruthy = evaluateExpression(rule, opts);
   const next = rule.next();
 
   const transformAndInsertBeforeParent = (node) =>

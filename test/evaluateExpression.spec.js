@@ -1,10 +1,8 @@
 import { describe, it } from 'node:test';
-import {
-  evaluateExpression,
-  parseExpression,
-} from '../src/lib/tokenize-expression.js';
 import assert from 'node:assert';
-import { toMatchSnapshot } from './testUtils.js';
+
+import { evaluateExpression } from '../src/lib/expression/evaluate.js';
+import { parseExpression } from '../src/lib/expression/parse.js';
 
 describe('evaluateExpression', () => {
   const cases = {
@@ -31,7 +29,7 @@ describe('evaluateExpression', () => {
     '1 + 2 * 3': 7,
     '1 + 2 * 3 / 4': 2.5,
     '(1 + 2) * 3': 9,
-    '1 + (2 * 3)': 9,
+    '1 + (2 * 3)': 7,
     '2 == (1 + 1)': true,
     '(1 + 1) == 1': false,
     // functions

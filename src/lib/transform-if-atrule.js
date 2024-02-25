@@ -1,6 +1,7 @@
 // tooling
 import transformNode from './transform-node.js';
-import { evaluateExpression, parseExpression } from './tokenize-expression.js';
+import { evaluateExpression } from './expression/evaluate.js';
+import { parseExpression } from './expression/parse.js';
 
 // transform @if at-rules
 export default function transformIfAtrule(rule, opts) {

@@ -1,6 +1,7 @@
-import { parseExpression } from '../src/lib/tokenize-expression.js';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+
+import { parseExpression } from '../src/lib/expression/parse.js';
 
 describe('parseExpression', () => {
   const cases = {

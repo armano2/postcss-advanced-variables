@@ -1,6 +1,6 @@
 import { tokenizer, TokenType } from '@csstools/css-tokenizer';
-import getClosestVariable from './get-closest-variable';
-import manageUnresolved from './manage-unresolved';
+import getClosestVariable from './get-closest-variable.js';
+import manageUnresolved from './manage-unresolved.js';
 
 function replaceVariable(name, node, opts) {
   // the closest variable value
@@ -22,7 +22,6 @@ function replaceVariable(name, node, opts) {
 }
 
 const nodeTypes = {
-  Unknown: 'UnknownExpression',
   Variable: 'Variable',
   Identifier: 'Identifier',
   Expression: 'Expression',
@@ -35,33 +34,42 @@ const nodeTypes = {
 
 const operatorChars = ['+', '-', '*', '/', '%', '<', '>', '!', '='];
 
-function compare(children, operation) {
-  if (children.length !== 2) {
-    throw new Error(`Unsupported expression ${operation}`);
-  }
-  // TODO: implement support for unresolved variables and string operations
-  return operation(children[0], children[1]);
-}
-
-const operatorTypes = {
-  '+': (children) => compare(children, (a, b) => a + b),
-  '*': (children) => compare(children, (a, b) => a * b),
-  '/': (children) => compare(children, (a, b) => a / b),
-  '%': (children) => compare(children, (a, b) => a % b),
-  '-': (children) => compare(children, (a, b) => a - b),
-  '<': (children) => compare(children, (a, b) => a < b),
-  '>': (children) => compare(children, (a, b) => a > b),
-  '<=': (children) => compare(children, (a, b) => a <= b),
-  '>=': (children) => compare(children, (a, b) => a >= b),
-  '!=': (children) => compare(children, (a, b) => a !== b),
-  '==': (children) => compare(children, (a, b) => a === b),
+const operatorInfo = {
+  '+': { precedence: 1, math: (a, b) => a + b },
+  '-': { precedence: 1, math: (a, b) => a - b },
+  '*': { precedence: 2, math: (a, b) => a * b },
+  '/': { precedence: 2, math: (a, b) => a / b },
+  '%': { precedence: 2, math: (a, b) => a % b },
+  '<': { precedence: 3, math: (a, b) => a < b },
+  '>': { precedence: 3, math: (a, b) => a > b },
+  '<=': { precedence: 3, math: (a, b) => a <= b },
+  '>=': { precedence: 3, math: (a, b) => a >= b },
+  '!=': { precedence: 3, math: (a, b) => a !== b },
+  '==': { precedence: 3, math: (a, b) => a === b },
 };
 
-export function parseExpression(node) {
-  const tokens = tokenizer({
-    css: node.params,
-  });
-  const outStack = [{ type: nodeTypes.Expression, children: [] }];
+function compare(values, operation) {
+  const operator = operatorInfo[operation];
+  if (!operator) {
+    throw new Error(`Unsupported operator ${operation}`);
+  }
+  if (values.length !== 2) {
+    throw new Error(`Unsupported expression ${operation}`);
+  }
+  if (values.some((value) => typeof value !== 'number')) {
+    // console.log(values);
+    return values.join(` ${operation} `);
+  }
+  return operator.math(values[0], values[1]);
+}
+
+export function parseExpression(code) {
+  const rootNode = { type: nodeTypes.Expression, children: [] };
+  if (!code) {
+    return rootNode;
+  }
+  const tokens = tokenizer({ css: code });
+  const outStack = [rootNode];
 
   while (!tokens.endOfFile()) {
     const token = tokens.nextToken();
@@ -149,28 +157,14 @@ export function parseExpression(node) {
 
   if (outStack.length !== 1) {
     throw new Error(
-      `stack seem to be not correct ${outStack.length}, there seem to be something wrong with the expression ${node.params}`,
+      `stack seem to be not correct ${outStack.length}, there seem to be something wrong with the expression ${code}`,
     );
   }
 
   return outStack.pop();
 }
 
-export function evaluateExpression(parent, opts) {
-  if (!parent.params) {
-    return parent.params;
-  }
-  const nodeTree = parseExpression(parent);
-
-  if (!nodeTree.children.length) {
-    console.log(
-      'missing',
-      parent.params,
-      '|',
-      JSON.stringify(nodeTree, null, 2),
-    );
-  }
-
+export function evaluateExpression(nodeTree, parent, opts) {
   function visitAst(node) {
     switch (node.type) {
       case nodeTypes.Variable:
@@ -188,11 +182,7 @@ export function evaluateExpression(parent, opts) {
       case nodeTypes.Expression:
         if (node.operator) {
           const children = node.children.map(visitAst);
-          const operator = operatorTypes[node.operator];
-          if (typeof operator === 'function') {
-            return operator(children);
-          }
-          return children;
+          return compare(children, node.operator);
         }
         return visitAst(node.children[0]);
       default:

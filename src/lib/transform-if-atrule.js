@@ -1,11 +1,12 @@
 // tooling
-import transformNode from './transform-node';
-import { evaluateExpression } from './tokenize-expression';
+import transformNode from './transform-node.js';
+import { evaluateExpression, parseExpression } from './tokenize-expression.js';
 
 // transform @if at-rules
 export default function transformIfAtrule(rule, opts) {
   // @if options
-  const isTruthy = evaluateExpression(rule, opts);
+  const nodeTree = parseExpression(rule.params);
+  const isTruthy = evaluateExpression(nodeTree, rule, opts);
   const next = rule.next();
 
   const transformAndInsertBeforeParent = (node) =>

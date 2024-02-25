@@ -10,17 +10,18 @@
   },
   "homepage": "https://github.com/armano2/postcss-advanced-variables#readme",
   "bugs": "https://github.com/armano2/postcss-advanced-variables/issues",
-  "main": "lib/index.js",
+  "main": "lib/index.cjs",
   "module": "lib/index.mjs",
+  "type": "module",
   "files": [
-    "lib/index.js",
+    "lib/index.cjs",
     "lib/index.mjs"
   ],
   "scripts": {
     "prepublishOnly": "npm test",
     "format": "prettier src -w",
-    "build:watch": "rollup -c rollup.config.mjs --watch",
-    "pretest": "rollup -c rollup.config.mjs --silent",
+    "build:watch": "rollup -c rollup.config.js --watch",
+    "pretest": "rollup -c rollup.config.js --silent",
     "test": "npm run test:lint && npm run test:format && npm run test:unit",
     "test:lint": "eslint src",
     "test:format": "prettier src -c",
@@ -30,13 +31,13 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@csstools/css-tokenizer": "^2.2.3",
     "@csstools/sass-import-resolve": "^1.0.0"
   },
   "peerDependencies": {
     "postcss": "^8.2.4"
   },
   "devDependencies": {
-    "@csstools/css-tokenizer": "^2.2.3",
     "@eslint/js": "^8.57.0",
     "@types/node": "^20.11.20",
     "esbuild": "^0.20.1",

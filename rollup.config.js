@@ -1,5 +1,4 @@
 import esbuild from 'rollup-plugin-esbuild';
-import packageJson from './package.json' with { type: 'json' };
 
 export default {
   input: 'src/index.js',
@@ -10,8 +9,8 @@ export default {
   external: [
     'node:process',
     'node:path',
-    ...Object.keys(packageJson.dependencies),
-    ...Object.keys(packageJson.peerDependencies),
+    '@csstools/sass-import-resolve',
+    'postcss',
   ],
   plugins: [
     esbuild({

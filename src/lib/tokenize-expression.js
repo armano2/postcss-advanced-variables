@@ -1,4 +1,4 @@
-import { tokenizer, TokenType } from '@csstools/css-tokenizer';
+import { tokenize, TokenType } from '@csstools/css-tokenizer';
 import getClosestVariable from './get-closest-variable.js';
 import manageUnresolved from './manage-unresolved.js';
 
@@ -48,31 +48,57 @@ const operatorInfo = {
   '==': { precedence: 3, math: (a, b) => a === b },
 };
 
-function compare(values, operation) {
+function compare(values, operation, parent) {
   const operator = operatorInfo[operation];
   if (!operator) {
-    throw new Error(`Unsupported operator ${operation}`);
+    throw createError(`Unsupported operator ${operation}`, parent);
   }
   if (values.length !== 2) {
-    throw new Error(`Unsupported expression ${operation}`);
+    throw createError(`Unsupported expression ${operation}`, parent);
   }
   if (values.some((value) => typeof value !== 'number')) {
-    // console.log(values);
     return values.join(` ${operation} `);
   }
   return operator.math(values[0], values[1]);
 }
 
-export function parseExpression(code) {
+function createError(message, parent) {
+  if (parent) {
+    return parent.error(message, { plugin: 'postcss-advanced-variables' });
+  } else {
+    return new Error(message);
+  }
+}
+
+function tokenizer(code, parent) {
+  let index = 0;
+  const tokens = tokenize({ css: code });
+  return {
+    expect(type) {
+      if (tokens[index][0] !== type) {
+        throw createError(
+          `Unexpected token, expected ${type} but got ${tokens[index][0]} instead.`,
+          parent,
+        );
+      }
+    },
+    read(type) {
+      return !type || tokens[index][0] === type ? tokens[index++] : undefined;
+    },
+    endOfFile: () => tokens[index][0] === TokenType.EOF,
+  };
+}
+
+export function parseExpression(code, node) {
   const rootNode = { type: nodeTypes.Expression, children: [] };
   if (!code) {
     return rootNode;
   }
-  const tokens = tokenizer({ css: code });
+  const tokens = tokenizer(code, node);
   const outStack = [rootNode];
 
   while (!tokens.endOfFile()) {
-    const token = tokens.nextToken();
+    const token = tokens.read();
     const [type, value] = token;
 
     const lastNode = outStack[outStack.length - 1];
@@ -111,8 +137,8 @@ export function parseExpression(code) {
       case TokenType.Delim:
         if (operatorChars.includes(value)) {
           let operator = value;
-          const next = tokens.nextToken();
-          if (next && next[0] === TokenType.Delim) {
+          const next = tokens.read(TokenType.Delim);
+          if (next) {
             operator += next[1];
           }
           outStack.push({
@@ -121,15 +147,12 @@ export function parseExpression(code) {
             children: [lastNode.children.pop()],
           });
         } else if (value === '$') {
-          const next = tokens.nextToken();
-          if (next && next[0] === TokenType.Ident) {
-            lastNode.children.push({
-              type: nodeTypes.Variable,
-              value: next[1],
-            });
-          } else {
-            throw new Error('Unsupported variable');
-          }
+          tokens.expect(TokenType.Ident);
+          const next = tokens.read();
+          lastNode.children.push({
+            type: nodeTypes.Variable,
+            value: next[1],
+          });
         }
         break;
       case TokenType.Function:
@@ -186,7 +209,7 @@ export function evaluateExpression(nodeTree, parent, opts) {
       case nodeTypes.Expression:
         if (node.operator) {
           const children = node.children.map(visitAst);
-          return compare(children, node.operator);
+          return compare(children, node.operator, parent);
         }
         return visitAst(node.children[0]);
       default:

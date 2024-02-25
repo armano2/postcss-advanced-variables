@@ -5,7 +5,7 @@ import { evaluateExpression, parseExpression } from './tokenize-expression.js';
 // transform @if at-rules
 export default function transformIfAtrule(rule, opts) {
   // @if options
-  const nodeTree = parseExpression(rule.params);
+  const nodeTree = parseExpression(rule.params, rule);
   const isTruthy = evaluateExpression(nodeTree, rule, opts);
   const next = rule.next();
 

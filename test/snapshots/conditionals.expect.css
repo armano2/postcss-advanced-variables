@@ -70,8 +70,9 @@
     content: "pass";
   }
 
-/* @if ($number == calc($number - 1)) */ .is-number-equal-number-minus-1 {
-    content: "pass";
+/* @if ($number == calc($number - 1)) */
+.is-number-equal-number-minus-1 {
+    content: "fail";
   }
 
 /* @if (calc($number) == calc(3 + 2)) */
@@ -79,6 +80,7 @@
     content: "pass";
   }
 
-/* @if (calc($number) == calc($number + 2)) */ .is-calc-number-equal-calc-number-minus1 {
-    content: "pass";
+/* @if (calc($number) == calc($number + 2)) */
+.is-calc-number-equal-calc-number-minus1 {
+    content: "fail";
   }

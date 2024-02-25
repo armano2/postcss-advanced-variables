@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import rawPlugin from '../src/index.js';
 import postcssScss from 'postcss-scss';
 import postcss from 'postcss';
+import { toMatchSnapshot } from './testUtils.js';
 
 const options = {
   default: {
@@ -176,10 +177,11 @@ describe('validate tests', () => {
       const syntax = test.processOptions?.syntax ? 'scss' : 'css';
 
       const rootDir = './test/fixtures/';
+      const snapDir = './test/snapshots/';
       // test paths
       const sourcePath = path.resolve(rootDir, `${testBase}.${syntax}`);
-      const expectPath = path.resolve(rootDir, `${testFull}.expect.${syntax}`);
-      const resultPath = path.resolve(rootDir, `${testFull}.result.${syntax}`);
+      const expectPath = path.resolve(snapDir, `${testFull}.expect.${syntax}`);
+      const resultPath = path.resolve(snapDir, `${testFull}.result.${syntax}`);
 
       const parseOptions = {
         from: sourcePath,
@@ -199,17 +201,9 @@ describe('validate tests', () => {
         return;
       }
 
-      let result = await instance.process(sourceCSS, parseOptions);
+      const result = await instance.process(sourceCSS, parseOptions);
 
-      const resultCode = result.css;
-
-      const expectCSS = await fs
-        .readFile(expectPath, 'utf8')
-        .catch(() => fs.writeFile(expectPath, resultCode));
-
-      await fs.writeFile(resultPath, resultCode);
-
-      assert.strictEqual(resultCode, expectCSS);
+      await toMatchSnapshot(result.css, expectPath, resultPath);
 
       const warnings = result.messages
         .filter((m) => m.type === 'warning')

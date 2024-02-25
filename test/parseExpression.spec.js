@@ -19,8 +19,8 @@ describe('parseExpression', () => {
           type: 'Expression',
           operator: '+',
           children: [
-            { type: 'Number', value: 1 },
-            { type: 'Number', value: 2 },
+            { type: 'Literal', value: 1 },
+            { type: 'Literal', value: 2 },
           ],
         },
       ],
@@ -32,13 +32,13 @@ describe('parseExpression', () => {
           type: 'Expression',
           operator: '+',
           children: [
-            { type: 'Number', value: 1 },
+            { type: 'Literal', value: 1 },
             {
               type: 'Expression',
               operator: '*',
               children: [
-                { type: 'Number', value: 3 },
-                { type: 'Number', value: 2 },
+                { type: 'Literal', value: 3 },
+                { type: 'Literal', value: 2 },
               ],
             },
           ],
@@ -52,13 +52,13 @@ describe('parseExpression', () => {
           type: 'Expression',
           operator: '+',
           children: [
-            { type: 'Number', value: 1 },
+            { type: 'Literal', value: 1 },
             {
               type: 'Expression',
               operator: '*',
               children: [
-                { type: 'Number', value: 3 },
-                { type: 'Number', value: 2 },
+                { type: 'Literal', value: 3 },
+                { type: 'Literal', value: 2 },
               ],
             },
           ],
@@ -72,13 +72,13 @@ describe('parseExpression', () => {
           type: 'Expression',
           operator: '+',
           children: [
-            { type: 'Number', value: 1 },
+            { type: 'Literal', value: 1 },
             {
               type: 'Expression',
               operator: '*',
               children: [
-                { type: 'Number', value: 3 },
-                { type: 'Number', value: 2 },
+                { type: 'Literal', value: 3 },
+                { type: 'Literal', value: 2 },
               ],
             },
           ],
@@ -100,7 +100,7 @@ describe('parseExpression', () => {
               value: 'var',
             },
             {
-              type: 'Number',
+              type: 'Literal',
               value: 2,
             },
           ],

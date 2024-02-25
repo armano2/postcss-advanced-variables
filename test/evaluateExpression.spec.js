@@ -4,6 +4,7 @@ import {
   parseExpression,
 } from '../src/lib/tokenize-expression.js';
 import assert from 'node:assert';
+import { toMatchSnapshot } from './testUtils.js';
 
 describe('evaluateExpression', () => {
   const cases = {

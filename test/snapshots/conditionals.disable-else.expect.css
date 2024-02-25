@@ -104,7 +104,10 @@
   }
 }
 
-/* @if ($number == calc($number - 1)) */ @else {
+/* @if ($number == calc($number - 1)) */
+.is-number-equal-number-minus-1 {
+    content: "fail";
+  } @else {
   .is-number-equal-number-minus-1 {
     content: "pass";
   }
@@ -119,7 +122,10 @@
   }
 }
 
-/* @if (calc($number) == calc($number + 2)) */ @else {
+/* @if (calc($number) == calc($number + 2)) */
+.is-calc-number-equal-calc-number-minus1 {
+    content: "fail";
+  } @else {
   .is-calc-number-equal-calc-number-minus1 {
     content: "pass";
   }

@@ -1,14 +1,47 @@
 import { TokenType } from '@csstools/css-tokenizer';
 import { tokenizer } from './tokenizer.js';
-import { nodeTypes, operatorChars } from './globals.js';
+import { nodeTypes, operatorChars, operatorInfo } from './globals.js';
+import { createError } from './createError.js';
+import util from 'node:util';
 
-export function parseExpression(code, node) {
+const debug = false;
+function debugLog(message, data) {
+  if (debug) {
+    console.log(message, util.inspect(data, { depth: 10 }));
+  }
+}
+
+function checkPrecedence(node, operation, parent) {
+  const operator = operatorInfo[operation];
+  if (!operator) {
+    throw createError(`Unsupported operator ${operation}`, parent);
+  }
+
+  // if (
+  //   node.type === nodeTypes.ParenExpression ||
+  //   node.type === nodeTypes.CallExpression
+  // ) {
+  //   return false;
+  // }
+
+  const parentOperator = operatorInfo[node.operator];
+  if (!parentOperator) {
+    return true;
+  }
+  debugLog('checkPrecedence', node);
+
+  return parentOperator.precedence < operator.precedence;
+}
+
+export function parseExpression(code, parent) {
   const rootNode = { type: nodeTypes.Expression, children: [] };
   if (!code) {
     return rootNode;
   }
-  const tokens = tokenizer(code, node);
+  const tokens = tokenizer(code, parent);
   const outStack = [rootNode];
+
+  debugLog('parseExpression', code);
 
   while (!tokens.nextIs(TokenType.EOF)) {
     const token = tokens.next();
@@ -17,15 +50,17 @@ export function parseExpression(code, node) {
     const lastNode = outStack[outStack.length - 1];
 
     switch (type) {
-      case TokenType.OpenParen:
-        outStack.push({
+      case TokenType.OpenParen: {
+        const node = {
           type: nodeTypes.ParenExpression,
           children: [],
-        });
+        };
+        lastNode.children.push(node);
+        outStack.push(node);
         break;
+      }
       case TokenType.CloseParen: {
-        const node = outStack.pop();
-        outStack[outStack.length - 1].children.push(node);
+        outStack.pop();
         break;
       }
       case TokenType.String: {
@@ -60,11 +95,26 @@ export function parseExpression(code, node) {
           if (tokens.nextIs(TokenType.Delim)) {
             operator += tokens.next()[1];
           }
-          outStack.push({
+          const node = {
             type: nodeTypes.Expression,
             operator: operator,
-            children: [lastNode.children.pop()],
-          });
+            children: [],
+          };
+          if (checkPrecedence(lastNode, operator, parent)) {
+            node.children.push(lastNode.children.pop());
+            lastNode.children.push(node);
+            outStack.push(node);
+          } else {
+            debugLog('lastNode:tmp', lastNode);
+            debugLog('node:tmp', node);
+            const multi = outStack.pop();
+            node.children.push(multi);
+            outStack[outStack.length - 1].children.splice(-1, 1, node);
+            outStack.push(node);
+
+            debugLog('outStack:tmp', outStack);
+            debugLog('rootNode:tmp', rootNode);
+          }
         } else if (value === '$') {
           tokens.expect(TokenType.Ident);
           const next = tokens.next();
@@ -72,40 +122,29 @@ export function parseExpression(code, node) {
             type: nodeTypes.Variable,
             value: next[1],
           });
+        } else {
+          throw createError(`Unexpected token ${type}[${value}]`, parent);
         }
         break;
-      case TokenType.Function:
-        outStack.push({
+      case TokenType.Function: {
+        const node = {
           type: nodeTypes.CallExpression,
           value: token[4].value,
           children: [],
-        });
+        };
+        lastNode.children.push(node);
+        outStack.push(node);
         break;
+      }
       case TokenType.Whitespace:
         // skip
         break;
       default:
-        throw new Error(`Unsupported ${type}[${value}]`);
-    }
-
-    if (
-      lastNode.children.length > 1 &&
-      lastNode.type === nodeTypes.Expression
-    ) {
-      const node = outStack.pop();
-      outStack[outStack.length - 1].children.push(node);
+        throw createError(`Unexpected token ${type}[${value}]`, parent);
     }
   }
 
-  const lastNode = outStack[outStack.length - 1];
-  if (lastNode.type === nodeTypes.Expression && lastNode.operator) {
-    const node = outStack.pop();
-    outStack[outStack.length - 1].children.push(node);
-  }
+  debugLog('rootNode', rootNode);
 
-  if (outStack.length !== 1) {
-    throw new Error(`Something went wrong while parsing code "${code}"`);
-  }
-
-  return outStack.pop();
+  return rootNode;
 }

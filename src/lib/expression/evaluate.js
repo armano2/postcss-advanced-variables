@@ -9,7 +9,10 @@ function compare(values, operation, parent) {
     throw createError(`Unsupported operator ${operation}`, parent);
   }
   if (values.length !== 2) {
-    throw createError(`Unsupported expression ${operation}`, parent);
+    throw createError(
+      `Unsupported expression "${operation}" (${values.join(', ')})`,
+      parent,
+    );
   }
   if (values.some((value) => typeof value !== 'number')) {
     return values.join(` ${operation} `);

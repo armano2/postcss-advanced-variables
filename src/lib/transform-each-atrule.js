@@ -1,9 +1,9 @@
 // tooling
-import getReplacedString from './get-replaced-string';
-import getValueAsObject from './get-value-as-object';
-import setVariable from './set-variable';
-import transformNode from './transform-node';
-import waterfall from './waterfall';
+import getReplacedString from './get-replaced-string.js';
+import getValueAsObject from './get-value-as-object.js';
+import setVariable from './set-variable.js';
+import transformNode from './transform-node.js';
+import waterfall from './waterfall.js';
 
 // transform @each at-rules
 export default function transformEachAtrule(rule, opts) {

@@ -1,5 +1,5 @@
 // tooling
-import getClosestVariable from './get-closest-variable';
+import getClosestVariable from './get-closest-variable.js'
 import manageUnresolved from './manage-unresolved.js';
 
 // return content with its variables replaced by the corresponding values of a node

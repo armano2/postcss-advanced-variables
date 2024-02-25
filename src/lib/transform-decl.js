@@ -1,6 +1,6 @@
 // tooling
-import getReplacedString from './get-replaced-string';
-import setVariable from './set-variable';
+import getReplacedString from './get-replaced-string.js';
+import setVariable from './set-variable.js';
 
 // transform declarations
 export default function transformDecl(decl, opts) {

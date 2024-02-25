@@ -1,9 +1,9 @@
-import { test, describe, it } from 'node:test';
+import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
-import rawPlugin from '../lib/index.mjs';
+import rawPlugin from '../src/index.js';
 import postcssScss from 'postcss-scss';
 import postcss from 'postcss';
 

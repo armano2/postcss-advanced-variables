@@ -1,5 +1,5 @@
 // tooling
-import getClosestVariable from './get-closest-variable';
+import getClosestVariable from './get-closest-variable.js';
 
 // set a variable on a node
 export default function setVariable(node, name, value, opts) {

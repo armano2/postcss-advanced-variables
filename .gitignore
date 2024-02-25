@@ -9,7 +9,6 @@ yarn.lock
 !rollup.config.mjs
 !.tape.js
 !.travis.yml
-lib/index.js
-lib/index.mjs
+/lib
 .idea
 .vscode

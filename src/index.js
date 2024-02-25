@@ -1,5 +1,5 @@
 // tooling
-import transformNode from './lib/transform-node';
+import transformNode from './lib/transform-node.js';
 import resolve from '@csstools/sass-import-resolve';
 import process from 'node:process';
 

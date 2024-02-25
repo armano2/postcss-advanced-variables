@@ -29,7 +29,7 @@ const nodeTypes = {
   ParenExpression: 'ParenExpression',
   ColonExpression: 'ColonExpression',
   ComaExpression: 'ComaExpression',
-  Number: 'Number',
+  Literal: 'Literal',
 };
 
 const operatorChars = ['+', '-', '*', '/', '%', '<', '>', '!', '='];
@@ -91,14 +91,14 @@ export function parseExpression(code) {
       }
       case TokenType.Number:
         lastNode.children.push({
-          type: nodeTypes.Number,
+          type: nodeTypes.Literal,
           value: parseInt(value),
         });
         break;
       case TokenType.Ident:
         if (value === 'true' || value === 'false') {
           lastNode.children.push({
-            type: nodeTypes.Identifier,
+            type: nodeTypes.Literal,
             value: value === 'true',
           });
           break;
@@ -155,10 +155,14 @@ export function parseExpression(code) {
     }
   }
 
+  const lastNode = outStack[outStack.length - 1];
+  if (lastNode.type === nodeTypes.Expression && lastNode.operator) {
+    const node = outStack.pop();
+    outStack[outStack.length - 1].children.push(node);
+  }
+
   if (outStack.length !== 1) {
-    throw new Error(
-      `stack seem to be not correct ${outStack.length}, there seem to be something wrong with the expression ${code}`,
-    );
+    throw new Error(`Something went wrong while parsing code "${code}"`);
   }
 
   return outStack.pop();
@@ -171,7 +175,7 @@ export function evaluateExpression(nodeTree, parent, opts) {
         return replaceVariable(node.value, parent, opts);
       case nodeTypes.Identifier:
         return node.value;
-      case nodeTypes.Number:
+      case nodeTypes.Literal:
         return node.value;
       case nodeTypes.CallExpression: {
         const children = node.children.map(visitAst);

@@ -7,6 +7,10 @@ import assert from 'node:assert';
 
 describe('evaluateExpression', () => {
   const cases = {
+    // identifiers
+    123: 123,
+    true: true,
+    false: false,
     // operators
     '1 + 2': 3,
     '1 - 2': -1,
@@ -16,7 +20,6 @@ describe('evaluateExpression', () => {
     '+2': 2,
     '-2': -2,
     '8 % 3': 2,
-    true: true,
     '2 == 2': true,
     '2 != 2': false,
     '2 < 2': false,
@@ -28,9 +31,12 @@ describe('evaluateExpression', () => {
     '1 + 2 * 3 / 4': 2.5,
     '(1 + 2) * 3': 9,
     '1 + (2 * 3)': 9,
+    '2 == (1 + 1)': true,
+    '(1 + 1) == 1': false,
     // functions
     'calc(1) + 2': 'calc(1) + 2',
     'var(--test) + 2': 'var(--test) + 2',
+    'var(--bar)': 'var(--bar)',
   };
 
   for (const [expression, result] of Object.entries(cases)) {

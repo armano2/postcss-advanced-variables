@@ -4,6 +4,14 @@ import assert from 'node:assert';
 
 describe('parseExpression', () => {
   const cases = {
+    true: {
+      type: 'Expression',
+      children: [{ type: 'Literal', value: true }],
+    },
+    false: {
+      type: 'Expression',
+      children: [{ type: 'Literal', value: false }],
+    },
     '1 + 2': {
       type: 'Expression',
       children: [

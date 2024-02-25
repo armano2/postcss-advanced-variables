@@ -10,6 +10,8 @@ describe('evaluateExpression', () => {
     123: 123,
     true: true,
     false: false,
+    "'string'": "'string'",
+    '"string"': '"string"',
     // operators
     '1 + 2': 3,
     '1 - 2': -1,
@@ -36,6 +38,8 @@ describe('evaluateExpression', () => {
     'calc(1) + 2': 'calc(1) + 2',
     'var(--test) + 2': 'var(--test) + 2',
     'var(--bar)': 'var(--bar)',
+    // with strings
+    "my-var * test + 'string'": "my-var * test + 'string'",
   };
 
   for (const [expression, result] of Object.entries(cases)) {

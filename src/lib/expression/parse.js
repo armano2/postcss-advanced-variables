@@ -28,6 +28,13 @@ export function parseExpression(code, node) {
         outStack[outStack.length - 1].children.push(node);
         break;
       }
+      case TokenType.String: {
+        lastNode.children.push({
+          type: nodeTypes.Literal,
+          value: String(value),
+        });
+        break;
+      }
       case TokenType.Number:
         lastNode.children.push({
           type: nodeTypes.Literal,

@@ -21,10 +21,10 @@
     "format": "prettier src -w",
     "build:watch": "rollup -c rollup.config.mjs --watch",
     "pretest": "rollup -c rollup.config.mjs --silent",
-    "test": "npm run test:lint && npm run test:format && npm run test:tape",
+    "test": "npm run test:lint && npm run test:format && npm run test:unit",
     "test:lint": "eslint src",
     "test:format": "prettier src -c",
-    "test:tape": "postcss-tape"
+    "test:unit": "node --test"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -43,7 +43,6 @@
     "globals": "^14.0.0",
     "postcss": "^8.4.35",
     "postcss-scss": "^4.0.9",
-    "postcss-tape": "^6.0.1",
     "prettier": "^3.2.5",
     "rollup": "^4.12.0",
     "rollup-plugin-esbuild": "^6.1.1"

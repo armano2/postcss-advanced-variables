@@ -65,7 +65,7 @@ export function parseExpression(node) {
 
   while (!tokens.endOfFile()) {
     const token = tokens.nextToken();
-    const [type, value, start, end] = token;
+    const [type, value] = token;
 
     const lastNode = outStack[outStack.length - 1];
 
@@ -77,8 +77,7 @@ export function parseExpression(node) {
         });
         break;
       case TokenType.CloseParen:
-        const node = outStack.pop();
-        outStack[outStack.length - 1].children.push(node);
+        outStack[outStack.length - 1].children.push(outStack.pop());
         break;
       case TokenType.Number:
         lastNode.children.push({

@@ -228,6 +228,5 @@
 } @else {
   .is-calc-number-equal-calc-number-minus1 {
     content: "pass";
-    content: (calc(5) == calc(5 + 2));
   }
 }

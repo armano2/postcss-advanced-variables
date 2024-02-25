@@ -38,6 +38,7 @@
   "devDependencies": {
     "@csstools/css-tokenizer": "^2.2.3",
     "@eslint/js": "^8.57.0",
+    "@types/node": "^20.11.20",
     "esbuild": "^0.20.1",
     "eslint": "^8.57.0",
     "globals": "^14.0.0",

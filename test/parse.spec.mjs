@@ -1,4 +1,4 @@
-import { test, describe, it } from 'node:test';
+import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -199,10 +199,7 @@ describe('validate tests', () => {
         return;
       }
 
-      let result = null;
-      await assert.doesNotReject(async () => {
-        result = await instance.process(sourceCSS, parseOptions);
-      });
+      let result = await instance.process(sourceCSS, parseOptions);
 
       const resultCode = result.css;
 

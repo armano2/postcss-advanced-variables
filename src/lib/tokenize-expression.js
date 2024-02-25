@@ -76,9 +76,11 @@ export function parseExpression(node) {
           children: [],
         });
         break;
-      case TokenType.CloseParen:
-        outStack[outStack.length - 1].children.push(outStack.pop());
+      case TokenType.CloseParen: {
+        const node = outStack.pop();
+        outStack[outStack.length - 1].children.push(node);
         break;
+      }
       case TokenType.Number:
         lastNode.children.push({
           type: nodeTypes.Number,
@@ -145,7 +147,7 @@ export function parseExpression(node) {
     }
   }
 
-  if (outStack.length === 1) {
+  if (outStack.length !== 1) {
     throw new Error(
       `stack seem to be not correct ${outStack.length}, there seem to be something wrong with the expression ${node.params}`,
     );
@@ -159,6 +161,15 @@ export function evaluateExpression(parent, opts) {
     return parent.params;
   }
   const nodeTree = parseExpression(parent);
+
+  if (!nodeTree.children.length) {
+    console.log(
+      'missing',
+      parent.params,
+      '|',
+      JSON.stringify(nodeTree, null, 2),
+    );
+  }
 
   function visitAst(node) {
     switch (node.type) {

@@ -10,7 +10,7 @@ function compare(values, operation, parent) {
   }
   if (values.length !== 2) {
     throw createError(
-      `Unsupported expression "${operation}" (${values.join(', ')})`,
+      `Expression "${operation}" has to many arguments (${values.join(', ')})`,
       parent,
     );
   }

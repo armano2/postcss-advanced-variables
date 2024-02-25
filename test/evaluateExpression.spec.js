@@ -53,15 +53,18 @@ describe('evaluateExpression', () => {
     'false or 1': 1,
     // functions
     'calc(1) + 2': 'calc(1) + 2',
-    'var(--test) + 2': 'var(--test) + 2',
-    'var(--bar)': 'var(--bar)',
-    '(var(--bar))': '(var(--bar))',
     // with strings
     "my-var * test + 'string'": "my-var * test + 'string'",
     "'string' + 2 * 3": "'string' + 6",
     "'string' + (2 * 3)": "'string' + 6",
     "('string') + 2 * 3": "('string') + 6",
     "('string') and (test)": "('string') and (test)",
+    "('string' - 2) and ('string' + 2)": "('string' - 2) and ('string' + 2)",
+    // with variables
+    'var(--foo) + 2': 'var(--foo) + 2',
+    'var(--test) + 2': 'var(--test) + 2',
+    'var(--bar)': 'var(--bar)',
+    '(var(--bar))': '(var(--bar))',
   };
 
   for (const [expression, result] of Object.entries(cases)) {

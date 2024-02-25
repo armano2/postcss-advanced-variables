@@ -14,7 +14,7 @@ function compare(values, operation, parent) {
       parent,
     );
   }
-  if (values.some((value) => typeof value !== 'number')) {
+  if (values.some((value) => typeof value === 'string')) {
     return values.join(` ${operation} `);
   }
   return operator.math(values[0], values[1]);

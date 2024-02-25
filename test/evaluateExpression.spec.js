@@ -40,6 +40,17 @@ describe('evaluateExpression', () => {
     '1 + (2 * 3)': 7,
     '2 == (1 + 1)': true,
     '(1 + 1) == 1': false,
+    // booleans
+    'true and false': false,
+    'true or false': true,
+    'true and true': true,
+    'true or true': true,
+    'false and false': false,
+    'false or false': false,
+    'true and 1': 1,
+    'true or 1': true,
+    'false and 1': false,
+    'false or 1': 1,
     // functions
     'calc(1) + 2': 'calc(1) + 2',
     'var(--test) + 2': 'var(--test) + 2',

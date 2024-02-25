@@ -43,6 +43,30 @@ export function parseExpression(code, parent) {
 
   debugLog('parseExpression', code);
 
+  function createOperatorNode(operator) {
+    const lastNode = outStack[outStack.length - 1];
+    const node = {
+      type: nodeTypes.Expression,
+      operator: operator,
+      children: [],
+    };
+    if (checkPrecedence(lastNode, operator, parent)) {
+      node.children.push(lastNode.children.pop());
+      lastNode.children.push(node);
+      outStack.push(node);
+    } else {
+      debugLog('lastNode:tmp', lastNode);
+      debugLog('node:tmp', node);
+      const multi = outStack.pop();
+      node.children.push(multi);
+      outStack[outStack.length - 1].children.splice(-1, 1, node);
+      outStack.push(node);
+
+      debugLog('outStack:tmp', outStack);
+      debugLog('rootNode:tmp', rootNode);
+    }
+  }
+
   while (!tokens.nextIs(TokenType.EOF)) {
     const token = tokens.next();
     const [type, value] = token;
@@ -77,6 +101,10 @@ export function parseExpression(code, parent) {
         });
         break;
       case TokenType.Ident:
+        if (value === 'and' || value === 'or') {
+          createOperatorNode(value);
+          break;
+        }
         if (value === 'true' || value === 'false') {
           lastNode.children.push({
             type: nodeTypes.Literal,
@@ -95,26 +123,7 @@ export function parseExpression(code, parent) {
           if (tokens.nextIs(TokenType.Delim)) {
             operator += tokens.next()[1];
           }
-          const node = {
-            type: nodeTypes.Expression,
-            operator: operator,
-            children: [],
-          };
-          if (checkPrecedence(lastNode, operator, parent)) {
-            node.children.push(lastNode.children.pop());
-            lastNode.children.push(node);
-            outStack.push(node);
-          } else {
-            debugLog('lastNode:tmp', lastNode);
-            debugLog('node:tmp', node);
-            const multi = outStack.pop();
-            node.children.push(multi);
-            outStack[outStack.length - 1].children.splice(-1, 1, node);
-            outStack.push(node);
-
-            debugLog('outStack:tmp', outStack);
-            debugLog('rootNode:tmp', rootNode);
-          }
+          createOperatorNode(operator);
         } else if (value === '$') {
           tokens.expect(TokenType.Ident);
           const next = tokens.next();

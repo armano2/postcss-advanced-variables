@@ -1,6 +1,6 @@
 // tooling
-import postcss from 'postcss';
 import path from 'node:path';
+import postcss from 'postcss';
 import getReplacedString from './get-replaced-string.js';
 import transformNode from './transform-node.js';
 import manageUnresolved from './manage-unresolved.js';

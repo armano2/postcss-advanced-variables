@@ -173,6 +173,66 @@ describe('parseExpression', () => {
         },
       ],
     },
+    '7 + 2 * 2 - 5 + (7 + 2 * 2 - 5)': {
+      type: 'Expression',
+      children: [
+        {
+          type: 'Expression',
+          operator: '+',
+          children: [
+            { type: 'Literal', value: 7 },
+            {
+              type: 'Expression',
+              operator: '+',
+              children: [
+                {
+                  type: 'Expression',
+                  operator: '-',
+                  children: [
+                    {
+                      type: 'Expression',
+                      operator: '*',
+                      children: [
+                        { type: 'Literal', value: 2 },
+                        { type: 'Literal', value: 2 },
+                      ],
+                    },
+                    { type: 'Literal', value: 5 },
+                  ],
+                },
+                {
+                  type: 'ParenExpression',
+                  children: [
+                    {
+                      type: 'Expression',
+                      operator: '+',
+                      children: [
+                        { type: 'Literal', value: 7 },
+                        {
+                          type: 'Expression',
+                          operator: '-',
+                          children: [
+                            {
+                              type: 'Expression',
+                              operator: '*',
+                              children: [
+                                { type: 'Literal', value: 2 },
+                                { type: 'Literal', value: 2 },
+                              ],
+                            },
+                            { type: 'Literal', value: 5 },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   };
 
   for (const [expression, result] of Object.entries(cases)) {

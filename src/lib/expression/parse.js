@@ -4,33 +4,30 @@ import { nodeTypes, operatorChars, operatorInfo } from './globals.js';
 import { createError } from './createError.js';
 import util from 'node:util';
 
-const debug = false;
+const debug = true;
 function debugLog(message, data) {
   if (debug) {
-    console.log(message, util.inspect(data, { depth: 10, colors: true }));
+    if (!data) {
+      console.log(message);
+    } else {
+      console.log(message, util.inspect(data, { depth: 50, colors: true }));
+    }
   }
 }
 
 function checkPrecedence(node, operation, parent) {
-  const operator = operatorInfo[operation];
+  const operator = operatorInfo[operation]?.precedence;
   if (!operator) {
     throw createError(`Unsupported operator ${operation}`, parent);
   }
 
-  // if (
-  //   node.type === nodeTypes.ParenExpression ||
-  //   node.type === nodeTypes.CallExpression
-  // ) {
-  //   return false;
-  // }
-
-  const parentOperator = operatorInfo[node.operator];
+  const parentOperator = operatorInfo[node.operator]?.precedence;
   if (!parentOperator) {
     return true;
   }
   debugLog('checkPrecedence', node);
 
-  return parentOperator.precedence < operator.precedence;
+  return parentOperator < operator;
 }
 
 export function parseExpression(code, parent) {
@@ -41,6 +38,7 @@ export function parseExpression(code, parent) {
   const tokens = tokenizer(code, parent);
   const outStack = [rootNode];
 
+  debugLog('----------------');
   debugLog('parseExpression', code);
 
   function createOperatorNode(operator) {
@@ -51,12 +49,16 @@ export function parseExpression(code, parent) {
       children: [],
     };
     if (checkPrecedence(lastNode, operator, parent)) {
+      debugLog('checkPrecedence[true]', true);
+      debugLog('lastNode[true]', lastNode);
+      debugLog('node[true]', node);
       node.children.push(lastNode.children.pop());
       lastNode.children.push(node);
       outStack.push(node);
     } else {
-      debugLog('lastNode:tmp', lastNode);
-      debugLog('node:tmp', node);
+      debugLog('checkPrecedence[false]', false);
+      debugLog('lastNode[false]', lastNode);
+      debugLog('node[false]', node);
       const multi = outStack.pop();
       node.children.push(multi);
       outStack[outStack.length - 1].children.splice(-1, 1, node);

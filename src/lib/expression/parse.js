@@ -7,7 +7,7 @@ import util from 'node:util';
 const debug = false;
 function debugLog(message, data) {
   if (debug) {
-    console.log(message, util.inspect(data, { depth: 10 }));
+    console.log(message, util.inspect(data, { depth: 10, colors: true }));
   }
 }
 

@@ -53,15 +53,25 @@ export function evaluateExpression(nodeTree, parent, opts) {
 
         return `${node.value}(${children.join(', ')})`;
       }
-      case nodeTypes.ParenExpression:
-      case nodeTypes.Expression:
+      case nodeTypes.ParenExpression: {
+        const children = node.children.map(visitAst);
+        if (children.length === 1 && typeof children[0] !== 'string') {
+          return children[0];
+        }
+        return `(${children.join(') (')})`;
+      }
+      case nodeTypes.Expression: {
+        const children = node.children.map(visitAst);
         if (node.operator) {
-          const children = node.children.map(visitAst);
           return compare(children, node.operator, parent);
         }
-        return visitAst(node.children[0]);
+        if (node.children.length === 1) {
+          return children[0];
+        }
+        return children.join(' ');
+      }
       default:
-        throw new Error(`!Unsupported node type ${node.type}`);
+        throw createError(`!Unsupported node type ${node.type}`, parent);
     }
   }
 

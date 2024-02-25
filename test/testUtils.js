@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import assert from 'node:assert';
+import util from 'node:util';
 
 /**
  * @param result {any}
@@ -9,7 +10,7 @@ import assert from 'node:assert';
  */
 export async function toMatchSnapshot(result, expectPath, resultPath) {
   const resultCode =
-    typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+    typeof result === 'string' ? result : util.inspect(result, { depth: null });
 
   const expectCSS = await fs.readFile(expectPath, 'utf8').catch(async () => {
     await fs.writeFile(expectPath, resultCode);

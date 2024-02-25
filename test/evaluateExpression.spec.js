@@ -44,8 +44,13 @@ describe('evaluateExpression', () => {
     'calc(1) + 2': 'calc(1) + 2',
     'var(--test) + 2': 'var(--test) + 2',
     'var(--bar)': 'var(--bar)',
+    '(var(--bar))': '(var(--bar))',
     // with strings
     "my-var * test + 'string'": "my-var * test + 'string'",
+    "'string' + 2 * 3": "'string' + 6",
+    "'string' + (2 * 3)": "'string' + 6",
+    "('string') + 2 * 3": "('string') + 6",
+    "('string') and (test)": "('string') and (test)",
   };
 
   for (const [expression, result] of Object.entries(cases)) {

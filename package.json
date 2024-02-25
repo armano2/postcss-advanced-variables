@@ -4,22 +4,24 @@
   "description": "Use Sass-like variables, conditionals, and iterators in CSS",
   "author": "Jonathan Neal <jonathantneal@hotmail.com>",
   "license": "CC0-1.0",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/armano2/postcss-advanced-variables.git"
   },
   "homepage": "https://github.com/armano2/postcss-advanced-variables#readme",
   "bugs": "https://github.com/armano2/postcss-advanced-variables/issues",
-  "main": "lib/index.js",
+  "type": "module",
+  "main": "lib/index.cjs",
   "module": "lib/index.mjs",
   "files": [
-    "lib/index.js",
+    "lib/index.cjs",
     "lib/index.mjs"
   ],
   "scripts": {
     "prepublishOnly": "npm test",
     "format": "prettier src -w",
-    "pretest": "rollup -c rollup.config.mjs --silent",
+    "pretest": "rollup -c rollup.config.js",
     "test": "npm run test:lint && npm run test:format && npm run test:unit",
     "test:lint": "eslint src",
     "test:format": "prettier src -c",

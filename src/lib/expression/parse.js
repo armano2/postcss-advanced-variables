@@ -4,7 +4,7 @@ import { nodeTypes, operatorChars, operatorInfo } from './globals.js';
 import { createError } from './createError.js';
 import util from 'node:util';
 
-const debug = true;
+const debug = false;
 function debugLog(message, data) {
   if (debug) {
     if (!data) {
@@ -15,145 +15,167 @@ function debugLog(message, data) {
   }
 }
 
-function checkPrecedence(node, operation, parent) {
-  const operator = operatorInfo[operation]?.precedence;
+function checkPrecedence(a, b, parent) {
+  debugLog('checkPrecedence[a]', a.operator);
+  debugLog('checkPrecedence[b]', b.operator);
+
+  const operator = operatorInfo[b.operator]?.precedence;
   if (!operator) {
-    throw createError(`Unsupported operator ${operation}`, parent);
+    throw createError(`Unsupported operator ${b.operator}`, parent);
   }
 
-  const parentOperator = operatorInfo[node.operator]?.precedence;
+  const parentOperator = operatorInfo[a.operator]?.precedence;
   if (!parentOperator) {
+    debugLog('checkPrecedence[result]', 'parentOperator is not defined');
     return true;
   }
-  debugLog('checkPrecedence', node);
+  debugLog('checkPrecedence', parentOperator < operator);
 
   return parentOperator < operator;
 }
 
-export function parseExpression(code, parent) {
+export function parseExpression(code, rootElement) {
   const rootNode = { type: nodeTypes.Expression, children: [] };
   if (!code) {
     return rootNode;
   }
-  const tokens = tokenizer(code, parent);
-  const outStack = [rootNode];
+  const tokens = tokenizer(code, rootElement);
 
   debugLog('----------------');
   debugLog('parseExpression', code);
 
-  function createOperatorNode(operator) {
-    const lastNode = outStack[outStack.length - 1];
-    const node = {
-      type: nodeTypes.Expression,
-      operator: operator,
-      children: [],
-    };
-    if (checkPrecedence(lastNode, operator, parent)) {
-      debugLog('checkPrecedence[true]', true);
-      debugLog('lastNode[true]', lastNode);
-      debugLog('node[true]', node);
-      node.children.push(lastNode.children.pop());
-      lastNode.children.push(node);
-      outStack.push(node);
+  function readDelimNode(token) {
+    if (operatorChars.includes(token[1])) {
+      const node = {
+        type: nodeTypes.Expression,
+        operator: token[1],
+        children: [],
+      };
+      if (tokens.nextIs(TokenType.Delim)) {
+        node.operator += tokens.next()[1];
+      }
+      return node;
+    } else if (token[1] === '$') {
+      tokens.expect(TokenType.Ident);
+      return {
+        type: nodeTypes.Variable,
+        value: tokens.next()[1],
+      };
     } else {
-      debugLog('checkPrecedence[false]', false);
-      debugLog('lastNode[false]', lastNode);
-      debugLog('node[false]', node);
-      const multi = outStack.pop();
-      node.children.push(multi);
-      outStack[outStack.length - 1].children.splice(-1, 1, node);
-      outStack.push(node);
-
-      debugLog('outStack:tmp', outStack);
-      debugLog('rootNode:tmp', rootNode);
+      throw createError(
+        `Unexpected token ${token[0]}[${token[1]}]`,
+        rootElement,
+      );
     }
   }
 
-  while (!tokens.nextIs(TokenType.EOF)) {
-    const token = tokens.next();
-    const [type, value] = token;
-
-    const lastNode = outStack[outStack.length - 1];
-
-    switch (type) {
-      case TokenType.OpenParen: {
-        const node = {
-          type: nodeTypes.ParenExpression,
+  function readIdentNode(token) {
+    switch (token[1]) {
+      case 'and':
+      case 'or':
+        return {
+          type: nodeTypes.Expression,
+          operator: token[1],
           children: [],
         };
-        lastNode.children.push(node);
-        outStack.push(node);
-        break;
-      }
-      case TokenType.CloseParen: {
-        outStack.pop();
-        break;
-      }
-      case TokenType.String: {
-        lastNode.children.push({
+      case 'true':
+      case 'false':
+        return {
           type: nodeTypes.Literal,
-          value: String(value),
-        });
-        break;
-      }
-      case TokenType.Number:
-        lastNode.children.push({
-          type: nodeTypes.Literal,
-          value: parseInt(value),
-        });
-        break;
-      case TokenType.Ident:
-        if (value === 'and' || value === 'or') {
-          createOperatorNode(value);
-          break;
-        }
-        if (value === 'true' || value === 'false') {
-          lastNode.children.push({
-            type: nodeTypes.Literal,
-            value: value === 'true',
-          });
-          break;
-        }
-        lastNode.children.push({
+          value: token[1] === 'true',
+        };
+      default:
+        return {
           type: nodeTypes.Identifier,
-          value: value,
-        });
-        break;
-      case TokenType.Delim:
-        if (operatorChars.includes(value)) {
-          let operator = value;
-          if (tokens.nextIs(TokenType.Delim)) {
-            operator += tokens.next()[1];
-          }
-          createOperatorNode(operator);
-        } else if (value === '$') {
-          tokens.expect(TokenType.Ident);
-          const next = tokens.next();
-          lastNode.children.push({
-            type: nodeTypes.Variable,
-            value: next[1],
-          });
-        } else {
-          throw createError(`Unexpected token ${type}[${value}]`, parent);
-        }
-        break;
-      case TokenType.Function: {
-        const node = {
+          value: token[1],
+        };
+    }
+  }
+
+  function readStatement(token) {
+    switch (token[0]) {
+      case TokenType.OpenParen:
+        return {
+          type: nodeTypes.ParenExpression,
+          children: parseStatement(TokenType.CloseParen),
+        };
+      case TokenType.Function:
+        return {
           type: nodeTypes.CallExpression,
           value: token[4].value,
-          children: [],
+          children: parseStatement(TokenType.CloseParen),
         };
-        lastNode.children.push(node);
-        outStack.push(node);
-        break;
-      }
+      case TokenType.Ident:
+        return readIdentNode(token);
+      case TokenType.String:
+        return {
+          type: nodeTypes.Literal,
+          value: String(token[1]),
+        };
+      case TokenType.Number:
+        return {
+          type: nodeTypes.Literal,
+          value: parseInt(token[1]),
+        };
+      case TokenType.Delim:
+        return readDelimNode(token);
       case TokenType.Whitespace:
         // skip
         break;
       default:
-        throw createError(`Unexpected token ${type}[${value}]`, parent);
+        throw createError(
+          `Unexpected token ${token[0]}[${token[1]}]`,
+          rootElement,
+        );
     }
   }
+
+  function parseStatement(endTokenType) {
+    const result = { type: 'Root', children: [] };
+    const expressionStack = [result];
+
+    while (!tokens.nextIs(endTokenType)) {
+      const part = readStatement(tokens.next());
+      if (!part) {
+        // skip spaces
+        continue;
+      }
+      debugLog('------------');
+      debugLog('adding', part);
+      if (result.children.length === 0) {
+        debugLog('result.length === 0', result.length === 0);
+        result.children.push(part);
+        continue;
+      }
+
+      const lastExpression = expressionStack[expressionStack.length - 1];
+      if (part.type === nodeTypes.Expression) {
+        if (checkPrecedence(lastExpression, part, rootElement)) {
+          debugLog('checkPrecedence[true]', part.operator);
+          part.children.push(lastExpression.children.pop());
+          lastExpression.children.push(part);
+          expressionStack.push(part);
+        } else {
+          debugLog('checkPrecedence[false]', part.operator);
+          expressionStack.pop();
+          part.children.push(lastExpression);
+          expressionStack[expressionStack.length - 1].children.pop();
+          expressionStack[expressionStack.length - 1].children.push(part);
+          expressionStack.push(part);
+        }
+      } else {
+        lastExpression.children.push(part);
+      }
+
+      debugLog('expressionStack', expressionStack);
+    }
+    tokens.expect(endTokenType);
+    tokens.next();
+    debugLog('result', result.children);
+    return result.children;
+  }
+
+  rootNode.children = parseStatement(TokenType.EOF);
 
   debugLog('rootNode', rootNode);
 

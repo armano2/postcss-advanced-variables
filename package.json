@@ -31,6 +31,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@csstools/css-tokenizer": "^2.2.3",
     "@csstools/sass-import-resolve": "^1.0.0"
   },
   "peerDependencies": {
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
+    "@types/node": "^20.11.20",
     "esbuild": "^0.20.1",
     "eslint": "^8.57.0",
     "globals": "^14.0.0",

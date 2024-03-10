@@ -116,16 +116,71 @@
 	}
 }
 
+/* @if $number == 1 */
 @if $number == 1 {
 	.is-number-var-equal-to-1 {
 		content: "fail";
 	}
-} .is-number-var-not-equal-to-1 {
+} .is-number-var-equal-to-1 {
 		content: "pass";
 	}
 
+/* @if $number == 5 */
 @if $number == 5 {
 	.is-number-equal-to-5 {
 		content: "pass";
 	}
+}
+
+/* @if ($number == 1) */
+@if ($number == 1) {
+  .is-number-equal-to-1-parens {
+    content: "fail";
+  }
+} .is-number-equal-to-1-parens {
+    content: "pass";
+  }
+
+/* @if ($number == 5) */
+@if ($number == 5) {
+  .is-number-equal-to-5-parens {
+    content: "pass";
+  }
+}
+
+/* @if ($number == (3 + 2)) */
+@if ($number == (3 + 2)) {
+  .is-number-equal-calc-3-2-parens {
+    content: "pass";
+  }
+}
+
+/* @if ($number == ($number - 1)) */
+@if ($number == ($number - 1)) {
+  .is-number-equal-number-minus-1-parens {
+    content: "fail";
+  }
+} .is-number-equal-number-minus-1-parens {
+    content: "pass";
+  }
+
+/* @if ($number == calc($number - 1)) */
+@if ($number == calc($number - 1)) {
+  .is-number-equal-number-minus-1 {
+    content: "fail";
+  }
+}
+
+/* @if (calc($number) == calc(3 + 2)) */
+@if (calc($number) == calc(3 + 2)) {
+  .if-calc-number-equal-calc-3plus2 {
+    content: "pass";
+  }
+}
+
+/* @if (calc($number) == calc($number + 2)) */
+@if (calc($number) == calc($number + 2)) {
+  .is-calc-number-equal-calc-number-minus1 {
+    content: "fail";
+  }
 }

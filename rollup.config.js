@@ -10,6 +10,7 @@ export default {
     'node:process',
     'node:path',
     '@csstools/sass-import-resolve',
+    '@csstools/css-tokenizer',
     'postcss',
   ],
   plugins: [

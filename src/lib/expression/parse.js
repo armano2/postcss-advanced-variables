@@ -71,6 +71,15 @@ export function parseExpression(code, rootElement) {
 
   function readIdentNode(token) {
     switch (token[1]) {
+      case 'not': {
+        tokens.skip(TokenType.Whitespace);
+        const next = tokens.next();
+        return {
+          type: nodeTypes.Expression,
+          operator: 'not',
+          children: [readStatement(next)],
+        };
+      }
       case 'and':
       case 'or':
         return {

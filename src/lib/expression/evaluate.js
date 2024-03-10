@@ -8,7 +8,7 @@ function compare(values, operation, parent) {
   if (!operator) {
     throw createError(`Unsupported operator ${operation}`, parent);
   }
-  if (values.length !== 2) {
+  if (values.length !== (operator.arguments ?? 2)) {
     throw createError(
       `Expression "${operation}" has to many arguments (${values.join(', ')})`,
       parent,

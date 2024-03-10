@@ -29,9 +29,9 @@ function checkPrecedence(a, b, parent) {
     debugLog('checkPrecedence[result]', 'parentOperator is not defined');
     return true;
   }
-  debugLog('checkPrecedence', parentOperator < operator);
-
-  return parentOperator < operator;
+  const result = parentOperator > operator;
+  debugLog('checkPrecedence', result);
+  return result;
 }
 
 export function parseExpression(code, rootElement) {

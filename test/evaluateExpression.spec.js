@@ -40,6 +40,8 @@ describe('evaluateExpression', () => {
     '1 + (2 * 3)': 7,
     '2 == (1 + 1)': true,
     '(1 + 1) == 1': false,
+    '1 * 1 == 1': true,
+    '1 * 2 == 1': false,
     // booleans
     'true and false': false,
     'true or false': true,
@@ -65,12 +67,27 @@ describe('evaluateExpression', () => {
     'var(--test) + 2': 'var(--test) + 2',
     'var(--bar)': 'var(--bar)',
     '(var(--bar))': '(var(--bar))',
+    '$test + 2': 3,
+    '$test * 2 * $test == 2': true,
+    '$test * 2 * $test * $test == 1': false,
+    '$test + $test2': '1 + var(--bar)',
   };
 
   for (const [expression, result] of Object.entries(cases)) {
     it(`should evaluate ${expression}`, () => {
+      const parent = {
+        parent: {
+          variables: {
+            test: 1,
+            test2: 'var(--bar)',
+          },
+        },
+        error: (e) => {
+          throw new Error(e);
+        },
+      };
       const node = parseExpression(expression);
-      assert.deepStrictEqual(evaluateExpression(node, null, {}), result);
+      assert.deepStrictEqual(evaluateExpression(node, parent, {}), result);
     });
   }
 });

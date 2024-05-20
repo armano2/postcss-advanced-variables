@@ -39,7 +39,7 @@
   "devDependencies": {
     "@eslint/js": "^8.57.0",
     "esbuild": "^0.20.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.3.0",
     "globals": "^14.0.0",
     "postcss": "^8.4.35",
     "postcss-scss": "^4.0.9",

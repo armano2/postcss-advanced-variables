@@ -1,0 +1,132 @@
+
+	.is-true-true {
+		content: "pass";
+	} @else {
+	.is-true-false {
+		content: "fail";
+	}
+} @else {
+	.is-false-false {
+		content: "pass";
+	}
+}
+
+.is-true-variable-true {
+		content: "pass";
+	} @else {
+	.is-true-variable-false {
+		content: "pass";
+	}
+}
+
+.is-1-equal-to-1 {
+		content: "pass";
+	} @else {
+	.is-1-not-equal-to-1 {
+		content: "fail";
+	}
+} @else {
+	.is-1-not-equal-to-2 {
+		content: "pass";
+	}
+}
+
+.is-1-not-equal-to-2 {
+		content: "pass";
+	}
+
+.is-1-less-than-2 {
+		content: "pass";
+	}
+
+.is-1-greater-than-0 {
+		content: "pass";
+	}
+
+.is-1-less-than-or-equal-to-1 {
+		content: "pass";
+	}
+
+.is-1-less-than-or-equal-to-2 {
+		content: "pass";
+	}
+
+.is-1-less-than-or-equal-to-0 {
+		content: "pass";
+	}
+
+.is-1-less-than-or-equal-to-1 {
+		content: "pass";
+	}
+
+/* @if $number == 1 */ @else {
+	.is-number-var-equal-to-1 {
+		content: "pass";
+	}
+}
+
+/* @if $number == 5 */
+.is-number-equal-to-5 {
+		content: "pass";
+	} @else {
+	.is-number-equal-to-5 {
+		content: "fail";
+	}
+}
+
+/* @if ($number == 1) */ @else {
+  .is-number-equal-to-1-parens {
+    content: "pass";
+  }
+}
+
+/* @if ($number == 5) */
+.is-number-equal-to-5-parens {
+    content: "pass";
+  } @else {
+  .is-number-equal-to-5-parens {
+    content: "fail";
+  }
+}
+
+/* @if ($number == (3 + 2)) */
+.is-number-equal-calc-3-2-parens {
+    content: "pass";
+  } @else {
+  .is-number-equal-calc-3-2-parens {
+    content: "fail";
+  }
+}
+
+/* @if ($number == ($number - 1)) */ @else {
+  .is-number-equal-number-minus-1-parens {
+    content: "pass";
+  }
+}
+
+/* @if ($number == calc($number - 1)) */
+.is-number-equal-number-minus-1 {
+    content: "fail";
+  } @else {
+  .is-number-equal-number-minus-1 {
+    content: "pass";
+  }
+}
+
+/* @if (calc($number) == calc(3 + 2)) */
+.if-calc-number-equal-calc-3plus2 {
+    content: "pass";
+  } @else {
+  .else-calc-number-equal-calc-3plus2 {
+    content: "fail";
+  }
+}
+
+/* @if (calc($number) == calc($number + 2)) */
+.is-calc-number-equal-calc-number-minus1 {
+    content: "fail";
+  } @else {
+  .is-calc-number-equal-calc-number-minus1 {
+    content: "pass";
+  }
+}

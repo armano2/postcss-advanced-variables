@@ -105,4 +105,4 @@ const trimWrappingURL = (string) =>
 
 // return a string with the wrapping quotes trimmed
 const trimWrappingQuotes = (string) =>
-  string.replace(/^("|')([\W\w]*)\1$/, '$2');
+  string.replace(/^(["'])([\W\w]*)\1$/, '$2');

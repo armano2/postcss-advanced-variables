@@ -1,0 +1,111 @@
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+
+import { evaluateExpression } from '../src/lib/expression/evaluate.js';
+import { parseExpression } from '../src/lib/expression/parse.js';
+
+describe('evaluateExpression', () => {
+  const cases = {
+    // identifiers
+    123: 123,
+    true: true,
+    false: false,
+    "'string'": "'string'",
+    '"string"': '"string"',
+    // operators
+    '1 + 2': 3,
+    '1 - 2': -1,
+    '1 * 2': 2,
+    '1 / 2': 0.5,
+    '1 % 2': 1,
+    '+2': 2,
+    '-2': -2,
+    '8 % 3': 2,
+    '2 == 2': true,
+    '2 != 2': false,
+    '2 < 2': false,
+    '2 > 2': false,
+    '2 <= 2': true,
+    '2 >= 2': true,
+    // precedence
+    '1 + 2 * 3': 7,
+    '3 * 2 + 10 / 2': 11,
+    '1 + 2 * 3 / 4': 2.5,
+    '7 + 2 * 2 - 5': 6,
+    '7 + 2 * (2 - 5)': 1,
+    '(5 + 2) * (2 - 7)': -35,
+    '(3 + 8) * 7 - 6': 71,
+    '9 * 8 * 7 - 1': 503,
+    '(1 + 2) * 3': 9,
+    '1 + (2 * 3)': 7,
+    '2 == (1 + 1)': true,
+    '(1 + 1) == 1': false,
+    '1 * 1 == 1': true,
+    '1 * 2 == 1': false,
+    // booleans
+    'true and false': false,
+    'true or false': true,
+    'true and true': true,
+    'true or true': true,
+    'false and false': false,
+    'false or false': false,
+    'true and 1': 1,
+    'true or 1': true,
+    'false and 1': false,
+    'false or 1': 1,
+    'not true': false,
+    'not 1': false,
+    'not false': true,
+    'not false and true': true,
+    'not true and true': false,
+    'not (true or false)': false,
+    'not (true and false)': true,
+    'not not true': true,
+    'not not not false': true,
+    'true and false == true': false,
+    'true or false == true': true,
+    'false or true == true': true,
+    'false and true == true': false,
+    'false == true or false': false,
+    'true or false and true != false': true,
+    'true or false and true == false': true,
+    'true != false and true != false': true,
+    'true != false and false != false': true,
+    // functions
+    'calc(1) + 2': 'calc(1) + 2',
+    // with strings
+    "my-var * test + 'string'": "my-var * test + 'string'",
+    "'string' + 2 * 3": "'string' + 6",
+    "'string' + (2 * 3)": "'string' + 6",
+    "('string') + 2 * 3": "('string') + 6",
+    "('string') and (test)": "('string') and (test)",
+    "('string' - 2) and ('string' + 2)": "('string' - 2) and ('string' + 2)",
+    // with variables
+    'var(--foo) + 2': 'var(--foo) + 2',
+    'var(--test) + 2': 'var(--test) + 2',
+    'var(--bar)': 'var(--bar)',
+    '(var(--bar))': '(var(--bar))',
+    '$test + 2': 3,
+    '$test * 2 * $test == 2': true,
+    '$test * 2 * $test * $test == 1': false,
+    '$test + $test2': '1 + var(--bar)',
+  };
+
+  for (const [expression, result] of Object.entries(cases)) {
+    it(`should evaluate ${expression}`, () => {
+      const parent = {
+        parent: {
+          variables: {
+            test: 1,
+            test2: 'var(--bar)',
+          },
+        },
+        error: (e) => {
+          throw new Error(e);
+        },
+      };
+      const node = parseExpression(expression);
+      assert.deepStrictEqual(evaluateExpression(node, parent, {}), result);
+    });
+  }
+});

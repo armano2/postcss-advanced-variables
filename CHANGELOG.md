@@ -1,5 +1,12 @@
 # Changes to PostCSS Advanced Variables
 
+## [4.0.5](https://github.com/armano2/postcss-advanced-variables/compare/v4.0.4...v4.0.5) (2025-03-07)
+
+
+### Bug Fixes
+
+* update linting ([70648aa](https://github.com/armano2/postcss-advanced-variables/commit/70648aa4bd087e33cf86e7449be5c8614fffde83))
+
 ## [4.0.4](https://github.com/armano2/postcss-advanced-variables/compare/v4.0.3...v4.0.4) (2024-02-23)
 
 
